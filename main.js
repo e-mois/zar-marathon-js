@@ -1,53 +1,51 @@
-import { $formFight, $arena, createPlayer, generateLogs, checkWinner, enemyAttach, playerAttack } from "./utils.js";
-import { player1, player2 } from "./players.js";
+import { Player } from "./players.js";
+import { Game, $formFight } from "./game.js";
 
+const player1 = new Player({
+    number: 1,
+    name: 'Scorpion',
+    hp: 100,
+    img:'http://reactmarathon-api.herokuapp.com/assets/scorpion.gif',
+})
 
+const player2 = new Player({
+    number: 2,
+    name: 'Kitana',
+    hp: 100,
+    img:'http://reactmarathon-api.herokuapp.com/assets/kitana.gif',
+})
 
-export let {
-    name: namePlayer1,
-    hp: hpPlayer1,
-} = player1
+const game = new Game({
+    player1: player1,
+    player2: player2,
+})
 
-
-export let {
-    name: namePlayer2,
-    hp: hpPlayer2,
-} = player2
-
-
-$arena.appendChild(createPlayer(player1));
-$arena.appendChild(createPlayer(player2));
-
-
-generateLogs('start', namePlayer1, namePlayer2);
+game.start()
 
 $formFight.addEventListener('submit', function(e) {
     e.preventDefault();
 
-
-    const enemy = enemyAttach();
+    const enemy = game.enemyAttack();
     const {value: enemyValue, hit: enemyHit, defence: enemyDefence} = enemy
 
-    const player = playerAttack();
+    const player = game.playerAttack();
     const {value: playerValue, hit: playerHit, defence: playerDefence} = player
 
     if (playerDefence !== enemyHit) {
         player1.changeHP(enemyValue);
-        hpPlayer1 = player1.hp;
         player1.renderHP();
-        generateLogs('hit', namePlayer2, namePlayer1, enemyValue, hpPlayer1);
+        game.generateLogs('hit', player2.name, player1.name, enemyValue, player1.hp);
     } else if (playerDefence === enemyHit) {
-        generateLogs('defence', namePlayer2, namePlayer1, 0, hpPlayer1)
+        game.generateLogs('defence', player2.name, player1.name, 0, player1.hp)
     }
     
     if (enemyDefence !== playerHit) {
         player2.changeHP(playerValue);
-        hpPlayer2 = player2.hp;
         player2.renderHP();
-        generateLogs('hit', namePlayer1, namePlayer2, playerValue, hpPlayer2);
+        game.generateLogs('hit', player1.name, player2.name, playerValue, player2.hp);
     } else if (enemyDefence === playerHit) {
-        generateLogs('defence', namePlayer1, namePlayer2, 0, hpPlayer2);
+        game.generateLogs('defence', player1.name, player2.name, 0, player2.hp);
     }
 
-    checkWinner();
+    game.checkWinner();
 })
