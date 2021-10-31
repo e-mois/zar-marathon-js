@@ -1,3 +1,7 @@
+const $chat = document.querySelector('.chat');
+
+import { getRandom, getTime } from "./utils.js";
+
 export const logs = {
     start: 'Часы показывали [time], когда [player1] и [player2] бросили вызов друг другу.',
     end: [
@@ -37,3 +41,38 @@ export const logs = {
     ],
     draw: 'Ничья - это тоже победа!'
 };
+
+
+
+function generateLogs(type, player1, player2, damage, hp) {
+    switch (type) {
+        case 'start':
+            let textStart = logs[type].replace('[time]', getTime()).replace('[player1]', player1).replace('[player2]',player2);
+            let elStart = `<p>${textStart}</p>`;
+            $chat.insertAdjacentHTML('afterbegin', elStart);
+            break;
+        case 'hit':
+            let textHit = logs[type][getRandom(type.length - 1)].replace('[playerKick]', player1).replace('[playerDefence]', player2);
+            let elHit = `<p>${getTime()} ${textHit} -${damage} [${hp}/100] </p>`
+            $chat.insertAdjacentHTML('afterbegin', elHit);
+            break;
+        case 'defence':
+            let textDefence = logs[type][getRandom(type.length - 1)].replace('[playerKick]', player1).replace('[playerDefence]', player2);
+            let elDefence = `<p>${getTime()} ${textDefence} -${damage} [${hp}/100] </p>`
+            $chat.insertAdjacentHTML('afterbegin', elDefence);
+            break;
+        case 'end':
+            let textEnd = logs[type][getRandom(type.length - 1)].replace('[playerWins]', player1).replace('[playerLose]', player2);
+            let elEnd = `<p>${textEnd}</p>`;
+            $chat.insertAdjacentHTML('afterbegin', elEnd);
+            break;
+        case 'draw':
+            let textDraw = logs[type];
+            let elDraw = `<p>${textDraw}</p>`;
+            $chat.insertAdjacentHTML('afterbegin', elDraw);
+            break;
+    }
+
+}
+
+export { generateLogs };
