@@ -16,16 +16,14 @@ export class Player {
     }
 
     elHP() {
-        const $playerLife = document.querySelector('.player' + this.number + ' .life');
+        const $playerLife = document.querySelector(`.player${this.number} .life`);
         return $playerLife
     }
 
     renderHP() {
-        this.elHP().style.width = this.hp + '%';
+        this.elHP().style.width = `${this.hp}%`;
     }
 }
-
-
 
 // export const player1 = {
 //     number: 1,
